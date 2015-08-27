@@ -6,7 +6,7 @@ import keystoneclient.v2_0.client
 import local_settings
 
 def get_token():
-    keystone = keystoneclient.v2_0.client.Client(auth_url=local_settings.auth_url,
+    keystone = keystoneclient.v2_0.client.Client(auth_url=local_settings.auth_url_v2,
                                                  username=local_settings.username,
                                                  password=local_settings.password,
                                                  tenant_name=local_settings.tenant_name)
