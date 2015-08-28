@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import keystoneclient
+import keystoneclient.auth.identity.v3
+import keystoneclient.session
 import keystoneclient.v3.client
 
 import local_settings
@@ -11,6 +13,18 @@ def authenticate():
                                             password=local_settings.password,
                                             project_name=local_settings.tenant_name,
                                             auth_url=local_settings.auth_url_v3)
+    return keystone
+
+def auth_user_with_session():
+    auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url_v3,
+                                                    username=local_settings.username,
+                                                    password=local_settings.password,
+                                                    user_domain_name='Default',
+                                                    project_domain_name='Default',
+                                                    project_name=local_settings.tenant_name)
+    session = keystoneclient.session.Session(auth=auth)
+    keystone = keystoneclient.v3.client.Client(session=session)
+
     return keystone
 
 def get_token(keystone):
@@ -62,3 +76,5 @@ token1 = '06ec8f8797004f25a4d75273afc48568'  # 'expires_at': '2015-08-27T08:27:4
 token2 = '12e4329c37d44d4ebfdd08baf5324ecd'  # revoked
 print validate_token(keystone, token2)
 
+keystone = auth_user_with_session()
+print validate_token(keystone, token)
