@@ -18,3 +18,5 @@ session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.v2.client.Client(session=session)
 
 print dir(nova)
+for version in nova.versions.list():
+    print version.__dict__
