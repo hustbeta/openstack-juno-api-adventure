@@ -4,6 +4,8 @@
 
 Note that auth without session is deprecated.
 """
+import time
+
 import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
@@ -25,7 +27,9 @@ def auth_user(username, password, project_name):
 def auth_user_with_session(username, password, project_name):
     """Authenticate using username/password
 
-    This method won't fail upon bad username/password, annoying.
+    This method doesn't verify username/password.
+    Instead, client will authenticate on first request,
+    and re-authenticate automatically when the token expires.
     """
     auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url_v3,
                                                     username=username,
@@ -60,6 +64,17 @@ def auth_token_with_session(token):
 keystone = auth_user_with_session(local_settings.username,
                                   local_settings.password,
                                   local_settings.tenant_name)
-print keystone
-print keystone.domains.list()
+
+try:
+    result = keystone.domains.list()
+    print result
+
+    # set token expiration to a very short period, and wait for expiration here
+    for i in range(1, 40):
+        time.sleep(1)
+
+    result = keystone.projects.list()
+    print result
+except keystoneclient.openstack.common.apiclient.exceptions.Unauthorized:
+    print 'authentication failed'
 
