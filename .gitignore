@@ -58,3 +58,6 @@ target/
 
 # project specific
 local_settings.py
+
+*.pyc
+*.pyo
