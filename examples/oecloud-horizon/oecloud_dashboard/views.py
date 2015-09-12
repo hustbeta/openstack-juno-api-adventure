@@ -20,7 +20,7 @@ try:
 except AttributeError:
     is_safe_url = utils.is_safe_url
 
-
+KEYSTONE_CLIENT_ATTR = "_keystoneclient"
 def login(request, extra_context=None, **kwargs):
     redirect = request.GET.get('redirect',
         request.POST.get('redirect', kwargs.get('redirect', '')))
@@ -69,6 +69,10 @@ def login(request, extra_context=None, **kwargs):
         request.session['region_name'] = region_name
         print u'验证'
         u = request.user
+        c = getattr(request, KEYSTONE_CLIENT_ATTR)
+        print '-+' * 20
+        print type(c)
+        print '-' * 20
         d = u.__dict__
         return JsonResponseSuccess(msg='success', user=d)
 
