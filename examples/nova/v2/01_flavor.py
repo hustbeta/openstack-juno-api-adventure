@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
+import random
+import time
 
 import keystoneclient
 import keystoneclient.auth.identity.v3
@@ -20,4 +22,13 @@ session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
 print json.dumps(nova.flavors.get(1).to_dict())
+
+flavor = nova.flavors.create(str(time.time()),
+                             random.randint(1, 4096),
+                             random.randint(1, 4),
+                             random.randint(1, 120),
+                             flavorid=u'aA 1-_.',
+                             ephemeral=0,
+                             swap=0)
+print flavor
 
