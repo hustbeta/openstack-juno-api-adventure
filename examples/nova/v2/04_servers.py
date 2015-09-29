@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
+
 import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
@@ -17,6 +19,6 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
-print dir(nova)
-for version in nova.versions.list():
-    print version.__dict__
+servers = nova.servers.list(detailed=True)
+print json.dumps([server.to_dict() for server in servers])
+

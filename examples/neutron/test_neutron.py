@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import pprint
+import json
 
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
@@ -27,8 +27,9 @@ def get_session():
 
 def test_neutron(session):
     neutron = neutronclient.neutron.client.Client('2.0', session=session)
-    pprint.pprint(neutron.list_networks())
-    pprint.pprint(neutron.list_subnets(tenant_id='422b53b9339f427abca6a1eab3c1cdd1'))
+    print json.dumps(neutron.list_networks())
+    print json.dumps(neutron.list_routers())
+    print json.dumps(neutron.list_ports())
 
 session = get_session()
 test_neutron(session)
