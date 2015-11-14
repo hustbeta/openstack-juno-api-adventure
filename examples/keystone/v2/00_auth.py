@@ -10,6 +10,9 @@ def get_token():
                                                  username=local_settings.username,
                                                  password=local_settings.password,
                                                  tenant_name=local_settings.tenant_name)
-    return keystone.auth_token
+    return keystone
 
-print get_token()
+keystone = get_token()
+print keystone.auth_token
+print keystone
+print keystone.users.get('d6a5511a2fd546269cf7c3903b1fe0aa').to_dict()

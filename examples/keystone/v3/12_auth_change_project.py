@@ -7,12 +7,14 @@ import keystoneclient.auth.identity.v3
 import keystoneclient.exceptions
 import keystoneclient.session
 import keystoneclient.v3.client
+import novaclient.client
 
 import local_settings
 
 def get_unscoped_client():
     keystone = keystoneclient.v3.client.Client(auth_url=local_settings.auth_url_v3,
-                                               username=local_settings.username,
+                                               #username=local_settings.username,
+                                               username='demo',
                                                password=local_settings.password,
                                                unscoped=True)
     return keystone
@@ -35,12 +37,14 @@ def main():
                                                  token=keystone.auth_token,
                                                  project_id=projects[0].id)
     session = keystoneclient.session.Session(auth=auth)
-    # 注意下面的auth_url是必须的，否则会报错
-    keystone2 = keystoneclient.client.Client(auth_url=local_settings.auth_url_v3,
-                                             session=session)
-    print json.dumps([i.to_dict() for i in keystone2.users.list()])
-    admin = keystone2.users.get('d6a5511a2fd546269cf7c3903b1fe0aa')
-    print dir(admin)
+    nova = novaclient.client.Client('2', session=session)
+    print json.dumps([i.to_dict() for i in nova.flavors.list()])
+    auth2 = keystoneclient.auth.identity.v3.Token(auth_url=local_settings.auth_url_v3,
+                                                   token=session.get_token(),
+                                                   project_id=projects[1].id)
+    session2 = keystoneclient.session.Session(auth=auth2)
+    nova2 = novaclient.client.Client('2', session=session2)
+    print json.dumps([i.to_dict() for i in nova2.flavors.list()])
 
 main()
 

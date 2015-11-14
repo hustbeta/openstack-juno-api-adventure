@@ -17,6 +17,5 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 glance = glanceclient.Client('2', session=session)
 
-print dir(glance)
-print json.dumps([image for image in glance.images.list()])
+print json.dumps([i for i in glance.images.list(filters={'image_type': 'backup'})])
 

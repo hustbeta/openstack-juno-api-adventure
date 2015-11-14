@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import json
 
 import keystoneclient
@@ -38,9 +39,12 @@ def main():
     # 注意下面的auth_url是必须的，否则会报错
     keystone2 = keystoneclient.client.Client(auth_url=local_settings.auth_url_v3,
                                              session=session)
-    print json.dumps([i.to_dict() for i in keystone2.users.list()])
-    admin = keystone2.users.get('d6a5511a2fd546269cf7c3903b1fe0aa')
-    print dir(admin)
+    now = datetime.datetime.now()
+    name = now.strftime('%Y%m%d%H%M%S')
+    user = keystone2.users.create(name, password='oseasy', email='%s@os-easy.com' % name,
+                                  description='description...',
+                                  default_project='b1760fd937764b61a86feff3d4bd42d1')
+    print json.dumps(user.to_dict())
 
 main()
 

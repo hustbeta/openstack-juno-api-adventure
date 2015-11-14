@@ -19,8 +19,8 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
-#servers = nova.servers.list(detailed=False, search_opts={'all_tenants': True, 'status': 'ACTIVE'})
-servers = nova.servers.list(detailed=True)
-print dir(servers[0])
-print json.dumps([server.to_dict() for server in servers])
+server = nova.servers.get('f893cbec-b8dc-4bb4-8ee1-baa43c91bc30')
+print json.dumps(server.to_dict())
+backup = server.backup('backup-1', 'daily', 1)
+print backup
 

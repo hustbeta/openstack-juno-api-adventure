@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import datetime
 import json
-import time
+import random
 
 import keystoneclient
 import keystoneclient.auth.identity.v3
@@ -26,22 +25,13 @@ session = keystoneclient.session.Session(auth=auth)
 client = ceilometerclient.client.get_client('2',
                                             token=session.get_token(),
                                             ceilometer_url='http://10.202.19.11:8777')
-alarm = client.alarms.create(name='alarm-' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '%.06f' % time.time(),
-                             description='description fdsfds',
-                             type='threshold',
-                             enabled=False,
-                             repeat_action=True,
-                             project_id=projects[0].id,
-                             threshold_rule={
-                                 'comparison_operator': 'gt',
-                                 'evaluation_period': 2,
-                                 'exclude_outliners': False,
-                                 'meter_name': 'cpu_util',
-                                 'period': 600,
-                                 'query': [],
-                                 'statistic': 'avg',
-                                 'threshold': 70.0,
-                             },
-                             alarm_actions=['http://127.0.0.1:8000/ops/alarms'])
-print alarm
+res = client.samples.list(meter_name='cpu_util',
+                          q=[{
+                              'field': 'resource_id',
+                              'value': 'b2c8de4a-e6d9-430f-b961-a65025d24574',
+                          }],
+                          limit=10)
+print type(res[0].counter_volume)
+print type(res[0].timestamp)
+print json.dumps([i.to_dict() for i in res])
 

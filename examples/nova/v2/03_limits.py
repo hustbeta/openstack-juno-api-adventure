@@ -21,4 +21,7 @@ nova = novaclient.client.Client('2', session=session)
 
 print json.dumps(nova.limits.get().to_dict())
 print json.dumps(nova.limits.get(tenant_id='4f55e99ec6d444bc904acfe358eaac09').to_dict())
+q = nova.limits.get(tenant_id='4f55e99ec6d444bc904acfe358eaac09')
+for i in q.absolute:
+    print i.name
 

@@ -21,19 +21,5 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
-print dir(nova)
-
 print json.dumps([flavor.to_dict() for flavor in nova.flavors.list(detailed=True, is_public=False)])
-
-flavor = nova.flavors.create(str(time.time()) + ' 999',
-                             random.randint(1, 4096),
-                             random.randint(1, 4),
-                             random.randint(1, 120),
-                             flavorid=u'aA 1-_.',
-                             ephemeral=0,
-                             swap=0)
-print flavor
-
-for flavor in nova.flavors.list(detailed=True):
-    print flavor.id, flavor.get_keys()
 

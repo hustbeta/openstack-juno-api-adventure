@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 import json
 
-import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
-import keystoneclient.v3.client
-import novaclient.client
+import cinderclient.client
 
 import local_settings
 
@@ -17,10 +15,23 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
                                                 project_domain_name='Default',
                                                 project_name=local_settings.tenant_name)
 session = keystoneclient.session.Session(auth=auth)
-nova = novaclient.client.Client('2', session=session)
+cinder = cinderclient.client.Client('2', session=session)
 
-#servers = nova.servers.list(detailed=False, search_opts={'all_tenants': True, 'status': 'ACTIVE'})
-servers = nova.servers.list(detailed=True)
-print dir(servers[0])
-print json.dumps([server.to_dict() for server in servers])
+q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=False)
+print q.backups
+q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=True)
+for attr in dir(q):
+    print attr
+print q.backups
+'''
+ret = {}
+for attr in dir(q):
+    if attr == 'id' or attr.startswith('_'):
+        continue
+    if attr.startswith('backup') or attr.startswith('gigabytes') or attr.startswith('snapshots') \
+            or attr.startswith('volumes'):
+        obj = getattr(q, attr)
+        ret[attr] = obj
+print json.dumps(ret)
+'''
 

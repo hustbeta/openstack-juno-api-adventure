@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 
+import glanceclient
 import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
@@ -18,9 +19,11 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
                                                 project_name=local_settings.tenant_name)
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
+glance = glanceclient.Client('2', session=session)
 
-#servers = nova.servers.list(detailed=False, search_opts={'all_tenants': True, 'status': 'ACTIVE'})
-servers = nova.servers.list(detailed=True)
-print dir(servers[0])
-print json.dumps([server.to_dict() for server in servers])
+server = nova.servers.get('0707d221-cc69-4eb6-a693-d6696afa5234')
+image_uuid = server.create_image('test-image-1')
+print image_uuid
+image = glance.images.get(image_uuid)
+print image
 

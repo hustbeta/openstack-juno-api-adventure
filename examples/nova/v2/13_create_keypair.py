@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import json
 
 import keystoneclient
@@ -19,8 +20,7 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
-#servers = nova.servers.list(detailed=False, search_opts={'all_tenants': True, 'status': 'ACTIVE'})
-servers = nova.servers.list(detailed=True)
-print dir(servers[0])
-print json.dumps([server.to_dict() for server in servers])
+keypair = nova.keypairs.create('test-%s' % datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+print dir(keypair)
+print json.dumps(keypair.to_dict())
 

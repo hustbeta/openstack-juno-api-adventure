@@ -38,9 +38,9 @@ def main():
     # 注意下面的auth_url是必须的，否则会报错
     keystone2 = keystoneclient.client.Client(auth_url=local_settings.auth_url_v3,
                                              session=session)
-    print json.dumps([i.to_dict() for i in keystone2.users.list()])
-    admin = keystone2.users.get('d6a5511a2fd546269cf7c3903b1fe0aa')
-    print dir(admin)
+    res = keystone2.projects.list()
+    print dir(res[0])
+    print json.dumps([i.to_dict() for i in res])
 
 main()
 
