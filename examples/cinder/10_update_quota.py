@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 import json
 
-import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
-import keystoneclient.v3.client
-import novaclient.client
+import cinderclient.client
 
 import local_settings
 
@@ -16,13 +14,25 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
                                                 user_domain_name='Default',
                                                 project_domain_name='Default',
                                                 project_name=local_settings.tenant_name)
-print auth
 session = keystoneclient.session.Session(auth=auth)
-nova = novaclient.client.Client('2', session=session)
+cinder = cinderclient.client.Client('2', session=session)
 
-res = nova.quotas.get('422b53b9339f427abca6a1eab3c1cdd1')
-print 'cores:', res.cores
-print json.dumps(res.to_dict())
-res = nova.quotas.defaults('422b53b9339f427abca6a1eab3c1cdd1')
-print json.dumps(res.to_dict())
+q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=False)
+print q.volumes_ssd
+
+print cinder.quotas.update('422b53b9339f427abca6a1eab3c1cdd1', **{'volumes_ssd': 5})
+
+q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=False)
+print q.volumes_ssd
+'''
+ret = {}
+for attr in dir(q):
+    if attr == 'id' or attr.startswith('_'):
+        continue
+    if attr.startswith('backup') or attr.startswith('gigabytes') or attr.startswith('snapshots') \
+            or attr.startswith('volumes'):
+        obj = getattr(q, attr)
+        ret[attr] = obj
+print json.dumps(ret)
+'''
 

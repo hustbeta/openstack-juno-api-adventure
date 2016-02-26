@@ -17,12 +17,20 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 cinder = cinderclient.client.Client('2', session=session)
 
+'''
 q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=False)
-print q.backups
-q = cinder.quotas.get('422b53b9339f427abca6a1eab3c1cdd1', usage=True)
 for attr in dir(q):
-    print attr
-print q.backups
+    try:
+        print attr, getattr(q, attr)
+    except:
+        print 'no attr:', attr
+'''
+q = cinder.quotas.get('ff281ae03464482fb9b584c69fdb10e7', usage=True)
+for attr in dir(q):
+    try:
+        print attr, getattr(q, attr)
+    except:
+        print 'no attr:', attr
 '''
 ret = {}
 for attr in dir(q):

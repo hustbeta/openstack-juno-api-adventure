@@ -2,27 +2,23 @@
 # -*- coding: utf-8 -*-
 import json
 
-import keystoneclient
 import keystoneclient.auth.identity.v3
 import keystoneclient.session
-import keystoneclient.v3.client
-import novaclient.client
+import glanceclient
 
 import local_settings
 
-auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url_v3,
+auth = keystoneclient.auth.identity.v3.Password(#auth_url=local_settings.auth_url_v3,
+                                                auth_url='http://192.168.65.10:5000/v3',
                                                 username=local_settings.username,
-                                                password=local_settings.password,
+                                                #password=local_settings.password,
+                                                password='ADMIN_PASS',
                                                 user_domain_name='Default',
                                                 project_domain_name='Default',
                                                 project_name=local_settings.tenant_name)
-print auth
 session = keystoneclient.session.Session(auth=auth)
-nova = novaclient.client.Client('2', session=session)
+glance = glanceclient.Client('2', session=session)
 
-res = nova.quotas.get('422b53b9339f427abca6a1eab3c1cdd1')
-print 'cores:', res.cores
-print json.dumps(res.to_dict())
-res = nova.quotas.defaults('422b53b9339f427abca6a1eab3c1cdd1')
-print json.dumps(res.to_dict())
+image = glance.images.get('397ceee8-ee08-4919-b163-d10c20b42029')
+print image, dir(image)
 

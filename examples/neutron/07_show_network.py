@@ -11,8 +11,10 @@ import local_settings
 
 def get_session():
     keystone = keystoneclient.v3.client.Client(auth_url=local_settings.auth_url_v3,
-                                               username=local_settings.username,
-                                               password=local_settings.password,
+                                               #username=local_settings.username,
+                                               #password=local_settings.password,
+                                               username='zhuxiaokun',
+                                               password='oseasy',
                                                unscoped=True)
     keystone.management_url = keystone.auth_url
     projects = keystone.projects.list(user=keystone.auth_ref.user_id)
@@ -27,8 +29,9 @@ def get_session():
 
 def test_neutron(session):
     neutron = neutronclient.neutron.client.Client('2.0', session=session)
-    print json.dumps(neutron.list_quotas())
-    print json.dumps(neutron.show_quota('default'))
+    q = neutron.show_network('52230604-591e-4651-b051-8705a7b0a6c5')
+    print type(q)
+    print json.dumps(q)
 
 session = get_session()
 test_neutron(session)

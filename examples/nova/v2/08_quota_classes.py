@@ -21,9 +21,12 @@ nova = novaclient.client.Client('2', session=session)
 
 res = nova.quota_classes.get('default')
 d = res.to_dict()
+print json.dumps(d)
+'''
 for key in d:
     if key == 'id':
         continue
     print key
     nova.quota_classes.update('default', **{key: d[key]})
+'''
 
