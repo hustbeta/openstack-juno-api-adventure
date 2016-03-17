@@ -19,8 +19,9 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 nova = novaclient.client.Client('2', session=session)
 
-res = nova.quotas.get('422b53b9339f427abca6a1eab3c1cdd1')
-print json.dumps(res.to_dict())
-res = nova.quotas.defaults('422b53b9339f427abca6a1eab3c1cdd1')
-print json.dumps(res.to_dict())
+#servers = nova.servers.list(detailed=False, search_opts={'all_tenants': True, 'status': 'ACTIVE'})
+#servers = nova.servers.list(detailed=True, search_opts={'all_tenants': True})
+#servers = nova.servers.list(detailed=True)
+servers = nova.servers.list(detailed=False, search_opts={'status': 'ACTIVE'})
+print json.dumps([server.to_dict() for server in servers])
 

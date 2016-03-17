@@ -28,10 +28,12 @@ auth = keystoneclient.auth.identity.v3.Password(auth_url=local_settings.auth_url
 session = keystoneclient.session.Session(auth=auth)
 cinder = cinderclient.client.Client('2', session=session)
 
-q = cinder.volumes.list(search_opts={'project_id': '422b53b9339f427abca6a1eab3c1cdd1'})
+#q = cinder.volumes.list(search_opts={'project_id': '422b53b9339f427abca6a1eab3c1cdd1'})
 #q = cinder.volumes.list(search_opts={'volume_type': 'sata'})
 #q = cinder.volumes.list()
 #q = cinder.volumes.list(search_opts={'tenant_id': '4f55e99ec6d444bc904acfe358eaac09'})
 #q = cinder.volumes.list(search_opts={'os-vol-tenant-attr:tenant_id': '4f55e99ec6d444bc904acfe358eaac09'})
+#q = cinder.volumes.list(search_opts={'all_tenants': True, 'bootable': True})
+q = cinder.volumes.list(search_opts={'all_tenants': True, 'bootable': True, 'status': 'available'})
 print json.dumps([to_dict(i) for i in q])
 

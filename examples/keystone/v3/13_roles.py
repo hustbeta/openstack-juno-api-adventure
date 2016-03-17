@@ -38,7 +38,7 @@ def main():
     # 注意下面的auth_url是必须的，否则会报错
     keystone2 = keystoneclient.client.Client(auth_url=local_settings.auth_url_v3,
                                              session=session)
-    res = keystone2.roles.list()
+    res = keystone2.roles.list(name='user')
     print json.dumps([i.to_dict() for i in res])
 
 main()
