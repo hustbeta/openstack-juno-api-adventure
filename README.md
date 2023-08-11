@@ -1,2 +1,2 @@
 # openstack-juno-api-adventure
-看了OpenStack Python SDK的所有文档，却仍然编不出一段程序。
+All the OpenStack Python SDK documentation stuff feeds the minds up but produces nothing programmatically.
